@@ -1,0 +1,32 @@
+{
+  "name": "pjsonloader",
+  "version": "0.0.0",
+  "description": "PJSON loader",
+  "main": "dist/pjsonloader.js",
+  "scripts": {
+      "test": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EikosPartners/PJSONLoader.git"
+  },
+  "author": "Zachary Donato <zachary.donato@eikospartners.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/EikosPartners/PJSONLoader/issues"
+  },
+  "homepage": "https://github.com/EikosPartners/PJSONLoader#readme",
+  "dependencies": {
+    "RESTLoader": "^1.0.3",
+    "body-parser": "^1.15.2",
+    "copyfiles": "^0.2.1",
+    "express": "^4.14.0",
+    "lodash": "^4.13.1",
+    "moment": "^2.13.0",
+    "mustache": "^2.2.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.10.1",
+    "babel-preset-es2015": "^6.9.0"
+  }
+}
