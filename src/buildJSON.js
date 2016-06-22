@@ -4,7 +4,6 @@ var path = require('path');
 var mustache = require('mustache');
 var _ = require('lodash');
 var utils = require('./util/dataUtils');
-var _filePath = __dirname + '/../server/pjson';
 
 function walk(dir, done) {
     var results = [];
@@ -104,10 +103,11 @@ function recursiveMerge(obj, dictionaries, depth, should) {
         }
     }
 }
-function getJSON(name, callback) {
+function getJSON(name, opts, callback) {
     var start = new Date().getMilliseconds(),
-        fileName = _filePath + "/" + name,
-        dictionaries;
+        _filePath = path.resolve(opts.rootDir, opts.pjsonPath),
+        fileName =  _filePath + "/" + name,
+        dictionaries_filePath
 
     if (fileName.indexOf('.json') === -1) {
         fileName += '.json';

@@ -9,7 +9,6 @@ var fs = require('fs'),
     },
     pjson = require('./buildJSON.js'),
     _ = require('lodash');
-
 /**
  * Method to fail silently if the directory already exists.
  */
@@ -21,7 +20,9 @@ function failSilently(e)
     }
     else
     {
-        console.log(e);
+        if (e) {
+            console.log("error: " + e);
+        }
     }
 }
 
@@ -49,7 +50,7 @@ function load(app, options)
     }
 
     // Merge the default opts with the options the user supplied.
-    var opts = _.merge(DEFAULT_DIR_OPTIONS, options);
+    opts = _.merge(DEFAULT_DIR_OPTIONS, options);
 
     // Set up the directories, creating them if they do not exits.
     ensureDirectory(opts);
@@ -57,10 +58,10 @@ function load(app, options)
     // Register the pjson route on the app.
     app.get.apply(app, ['/pjson'].concat(opts.middleware).concat([
         function (req, res, next) {
-            pjson.getJSON(req.query.name,
+            pjson.getJSON(req.query.name, opts,
                 function (err, data) {
                     if (err) {
-                        console.log(err);
+                        res.status(404).send(err);
                     } else {
                         res.send(data) 
                     }
@@ -72,19 +73,17 @@ function load(app, options)
 /**
  * Method to ensure that the pjson directories exist, creates them if they do not.
  *
- * @param dirOptions - {
+ * @param opts - {
  *          rootDir: 'server/', ---  Optional, defaults to 'server'
  *          pjsonPath: 'server/pjson/', ---  Optional, defaults to 'server/pjson/'
  *          fragmentsPath: 'server/pjson/fragements/', --- Optional, defaults to 'pjson/fragments/'
  *          pagesPath: 'server/pjson/pages' --- Optional, defaults to 'server/pjson/paths/'
  *       }
  */
-function ensureDirectory(dirOptions)
+function ensureDirectory(opts)
 {
-    var opts = _.merge(DEFAULT_DIR_OPTIONS, dirOptions);
-
     // Make the root directory.
-    fs.mkdir(opts.rootDir, failSilently);
+    fs.mkdir(path.resolve(opts.rootDir), failSilently);
 
     // Make all other directories inside of the root directory.
     fs.mkdir(path.resolve(opts.rootDir, opts.pjsonPath), failSilently);
@@ -96,4 +95,4 @@ module.exports = {
     load: load,
     ensureDirectory: ensureDirectory,
     getJSON: pjson.getJSON
-}
+};

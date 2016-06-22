@@ -1,21 +1,21 @@
 {
-  "name": "pjsonloader",
+  "name": "pjson-loader",
   "version": "0.0.0",
   "description": "PJSON loader",
-  "main": "dist/pjsonloader.js",
+  "main": "src/psjon-loader.js",
   "scripts": {
       "test": ""
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/EikosPartners/PJSONLoader.git"
+    "url": "git+https://github.com/EikosPartners/pjson-loader.git"
   },
   "author": "Zachary Donato <zachary.donato@eikospartners.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/EikosPartners/PJSONLoader/issues"
+    "url": "https://github.com/EikosPartners/pjson-loader/issues"
   },
-  "homepage": "https://github.com/EikosPartners/PJSONLoader#readme",
+  "homepage": "https://github.com/EikosPartners/pjson-loader#readme",
   "dependencies": {
     "RESTLoader": "^1.0.3",
     "body-parser": "^1.15.2",
