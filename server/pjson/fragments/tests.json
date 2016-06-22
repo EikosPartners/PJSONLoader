@@ -8,6 +8,9 @@
       "mergeid": "recursion_test2"
     }
   },
+  "extend_test" : {
+    "contains" : "something"
+  },
   "recursion_test2":{
     "madeit2":true
   },

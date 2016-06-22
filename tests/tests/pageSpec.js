@@ -1,5 +1,6 @@
 /*global describe, it*/
 var chai = require('chai'),
+    mocha = require('mocha'),
     buildJSON = require('../../src/buildJSON'),
     sf = require('../utils/sortAndFilter'),
     testUtils = require('../utils/testUtils'),
@@ -10,7 +11,13 @@ var chai = require('chai'),
         pagesPath: 'pages',
         middleware: []
     },
+    pjsonLoader = require('../../src/pjson-loader'),
+    app = require('../../app'),
     expect = chai.expect;
+
+before( function () {
+    pjsonLoader.load(app, {});
+});
 
 describe('Page Test', function () {
 
@@ -56,9 +63,9 @@ describe('Page Test', function () {
         };
 
         buildJSON.test(mergeContent, opts, function (err, data) {
-            //console.log(JSON.stringify(data, null, 2));
-            //expect(data.options.target).to.equal('gridAdvancedGrid-npps-mf.favorite');
-            //expect(data.options.params.options.target.uri).to.equal('npps_mf_pools/save');
+            console.log(JSON.stringify(data, null, 2));
+            expect(data.madeit).to.be.true;
+            expect(data.do_it_again.madeit2).to.be.true;
             done();
         });
     });
@@ -66,7 +73,7 @@ describe('Page Test', function () {
     it('Merge json with extend', function (done) {
         var mergeContent = {
             "mergeid": {
-                "id": "column_star",
+                "id": "extend_test",
                 "extend": {
                     "name":"merged-favorite",
                     "extended": { "extendtest": "extendtestResults"}
