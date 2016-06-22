@@ -1,61 +1,61 @@
-var _ = require('lodash');
-var moment = require('moment');
-var _module;
+var _ = require('lodash'),
+    moment = require('moment'),
+    _module;
 
 
-    var DEBUG = true,
-        ALPHA = "QWERTYUIOPASDFGHJKLZXCVBNM",
-        NUMERIC = "0123456789",
-        BOOLS = [false, true, false],
-        MONTHS = ["January", "February", "March", "April", "May", "June",
+var DEBUG = true,
+    ALPHA = "QWERTYUIOPASDFGHJKLZXCVBNM",
+    NUMERIC = "0123456789",
+    BOOLS = [false, true, false],
+    MONTHS = ["January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"],
-        MonthFormat = function (date) {
-            var rawMonth = date.getMonth() + 1;
+    MonthFormat = function (date) {
+        var rawMonth = date.getMonth() + 1;
 
-            var formattedMonth = parseInt(rawMonth) < 10 ? '0' + rawMonth : rawMonth;
-            return formattedMonth;
-        },
-        TimeFormat = function (date) {
-            var rawHour = date.getHours(),
-                rawMinute = date.getMinutes(),
-                parsableHour = parseInt(rawHour),
-                timezone = 'EST',
-                amPm;
+        var formattedMonth = parseInt(rawMonth) < 10 ? '0' + rawMonth : rawMonth;
+        return formattedMonth;
+    },
+    TimeFormat = function (date) {
+        var rawHour = date.getHours(),
+            rawMinute = date.getMinutes(),
+            parsableHour = parseInt(rawHour),
+            timezone = 'EST',
+            amPm;
 
-            var formattedMinutes = parseInt(rawMinute) < 10 ? '0' + rawMinute : rawMinute;
+        var formattedMinutes = parseInt(rawMinute) < 10 ? '0' + rawMinute : rawMinute;
 
-            if (parsableHour >= 12){
-                amPm = 'PM';
-                if (parsableHour > 12){
-                    rawHour -= 12;
-                }
-            } else if (parsableHour < 12){
-                amPm = 'AM';
-                if (parsableHour === 0){
-                    rawHour == 12;
-                }
+        if (parsableHour >= 12){
+            amPm = 'PM';
+            if (parsableHour > 12){
+                rawHour -= 12;
             }
+        } else if (parsableHour < 12){
+            amPm = 'AM';
+            if (parsableHour === 0){
+                rawHour == 12;
+            }
+        }
 
-            var formattedHours = parseInt(rawHour) < 10 ? '0' + rawHour : rawHour;
+        var formattedHours = parseInt(rawHour) < 10 ? '0' + rawHour : rawHour;
 
-            return formattedHours + ":" + formattedMinutes + amPm + " " + timezone;
-        },
-        DayFormat = function(date){
-            var rawDate = date.getDate();
-            var formattedDate = parseInt(rawDate) < 10 ? '0' + rawDate : rawDate;
-            return formattedDate;
-        };
+        return formattedHours + ":" + formattedMinutes + amPm + " " + timezone;
+    },
+    DayFormat = function(date){
+        var rawDate = date.getDate();
+        var formattedDate = parseInt(rawDate) < 10 ? '0' + rawDate : rawDate;
+        return formattedDate;
+    };
 
 module.exports = _module =  {
 
-   crypto : {
+    crypto : {
         // not cryptographically sound, but good
         // enough for random data
 
         old_rand: Math.random,
         seed: function ( seed ) {
             if (seed) {
-                 Math.random = function ( ) {
+                Math.random = function ( ) {
                     var x = 10000 * Math.sin(seed++);
                     return x - Math.floor(x);
                 };
@@ -85,7 +85,7 @@ module.exports = _module =  {
         return id;
     },
     make_numeric_id: function () {
-      return _module.sample(NUMERIC, 6);
+        return _module.sample(NUMERIC, 6);
     },
     make_success: function ( ) {
         return { Status: 'SUCCESS' };
@@ -101,7 +101,7 @@ module.exports = _module =  {
             end.setHours(0,0,0,0);
         }
         var newDate = new Date(start.getTime() + Math.random()
-                     * (end.getTime() - start.getTime()));
+            * (end.getTime() - start.getTime()));
         return newDate;
     },
     make_tr: function (baseDate, force) {
@@ -124,7 +124,7 @@ module.exports = _module =  {
     },
 
     randomFloat: function(min, max) {
-       if (!max) {
+        if (!max) {
             max = min;
             min = 0;
         }
@@ -188,7 +188,7 @@ module.exports = _module =  {
         }
     },
     appendSearchFilterForRole: function(search, role){
-         if(role ==='DC'){
+        if(role ==='DC'){
 
             if(!search.filters){
                 search.filters = {}
@@ -218,7 +218,7 @@ module.exports = _module =  {
         if(!matches) return text;
         matches.forEach(function (match) {
             var prop = match.slice(2, match.length-2);
-            returnText = returnText.replace(match, values[prop]);
+            returnText = values[prop] !== undefined ? returnText.replace(match, values[prop]) : returnText;
         });
         return returnText;
     }

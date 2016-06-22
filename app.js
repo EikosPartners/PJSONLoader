@@ -11,3 +11,5 @@ pjsonLoader.load(app, {});
 
 var server = http.createServer(app);
 server.listen('9090');
+
+module.exports = app;

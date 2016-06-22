@@ -145,7 +145,38 @@ function getJSON(name, opts, callback) {
     });
 }
 
+function test(file, opts, callback) {
+    var start = new Date().getMilliseconds(),
+        dictionaries,
+        _filePath = path.resolve(opts.rootDir, opts.pjsonPath);
+
+    //initialize
+    walk(_filePath, function(err, results) {
+
+        if (err) {
+            console.error(err)
+            return;
+        }
+
+        dictionaries = results.filter(function(file) {
+            return file.indexOf('fragments') !== -1;
+        }).map(function(file) {
+            return fsw.fileToJsonSync(file);
+        });
+
+        if (utils.DEBUG) console.log(results);
+
+        var merged = recursiveMergeRunner(file, dictionaries);
+        var end = new Date().getMilliseconds();
+        console.error('difference', end - start);
+
+        callback(null, merged);
+    });
+
+};
+
 module.exports = {
     walk: walk,
-    getJSON: getJSON
-}
+    getJSON: getJSON,
+    test: test
+};
