@@ -2,7 +2,7 @@
   "name": "pjson-loader",
   "version": "1.0.0",
   "description": "PJSON loader",
-  "main": "src/psjon-loader.js",
+  "main": "src/pjson-loader.js",
   "scripts": {
     "test": "mocha tests/tests/**.js --reporter spec -C --timeout 15000"
   },
