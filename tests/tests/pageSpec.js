@@ -3,25 +3,40 @@ var chai = require('chai'),
     mocha = require('mocha'),
     buildJSON = require('../../src/buildJSON'),
     sf = require('../utils/sortAndFilter'),
+    fs = require('fs'),
     opts = {
-        rootDir: 'pageSpecDir'
+        rootDir: 'tests/server',
+        pjsonPath: 'pjson',
+        fragmentsPath: 'fragments',
+        pagesPath: 'pages',
+        middleware: []
     },
     pjsonLoader = require('../../src/pjson-loader'),
     app = require('../../app'),
-    expect = chai.expect;
-
-before( function () {
-    pjsonLoader.load(app, opts, function () {});
-});
+    expect = chai.expect,
+    testJSON = require('../../tests.json'),
+    path = require('path');
 
 describe('Page Test', function () {
+
+    before( function (done) {
+        pjsonLoader.load(app, opts, function () {
+            // Copy the tests.json file to the server test directory.
+            fs.writeFile(path.resolve(__dirname, '../server/pjson/fragments/tests.json'), JSON.stringify(testJSON), function (err) {
+                if (err)
+                    console.log(err);
+
+                done();
+            });
+        });
+    });
 
     it('Merge json with simple merge id', function (done) {
         var mergeContent = {
             mergeid: "simple_merge"
         };
         buildJSON.test(mergeContent, opts, function (err, data) {
-            //console.log(JSON.stringify(data, null, 2));
+            //console.log("the data: ", JSON.stringify(data, null, 2));
             expect(data.action.options.target).to.equal("{{column_star_target}}");
             done();
         });
@@ -58,7 +73,7 @@ describe('Page Test', function () {
         };
 
         buildJSON.test(mergeContent, opts, function (err, data) {
-            console.log(JSON.stringify(data, null, 2));
+            //console.log(JSON.stringify(data, null, 2));
             expect(data.madeit).to.be.true;
             expect(data.do_it_again.madeit2).to.be.true;
             done();
@@ -78,7 +93,7 @@ describe('Page Test', function () {
 
         buildJSON.test(mergeContent, opts, function (err, data) {
 
-            console.log(JSON.stringify(data, null, 2));
+            //console.log(JSON.stringify(data, null, 2));
             expect(data.name).to.equal('merged-favorite');
             expect(data.extended.extendtest).to.equal('extendtestResults');
 

@@ -13,7 +13,7 @@ describe("Directory Creation Test Suite with Default Options", function () {
         pjsonLoader.load(app, {}, function (err) { if (err) console.log(err); done(); });
     });
 
-    // After hook. Delete the created test directories.
+    //After hook. Delete the created test directories.
     after(function (done) {
         rimraf(path.resolve(__dirname, '../../server/pjson/fragments'), {},
             function (err) {
@@ -78,7 +78,6 @@ describe("Directory Creation Test Suite with Default Options", function () {
         fs.stat(path.resolve(__dirname, '../../server/pjson/pages'), function (err, stats) {
             if (err) {
                 console.log(err);
-                return;
             }
 
             expect(stats.isDirectory()).to.be.true;

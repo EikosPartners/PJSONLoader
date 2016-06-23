@@ -9,23 +9,6 @@ var fs = require('fs'),
     },
     pjson = require('./buildJSON.js'),
     _ = require('lodash');
-/**
- * Method to fail silently if the directory already exists.
- */
-function failSilently(e)
-{
-    if (e && e.code === 'EEXIST'){
-    
-        // fail silently because the directory already exists.
-    }
-    else
-    {
-        if (e) {
-            console.log("error: " + e);
-        }
-    }
-}
-
 
 /**
  * Load method to set up the route and ensure that the directories needed for pjson
@@ -70,7 +53,7 @@ function load(app, options, callback)
                     if (err) {
                         res.status(404).send(err);
                     } else {
-                        res.send(data) 
+                        res.send(data)
                     }
                 });
         }
@@ -110,13 +93,13 @@ function ensureDirectory(opts)
                     console.log(err);
                     return err;
                 }
+            });
 
-                fs.mkdir(path.resolve(opts.rootDir, opts.pjsonPath, opts.pagesPath), function (err) {
-                    if (err && err.code !== 'EEXIST') {
-                        console.log(err);
-                        return err;
-                    }
-                });
+            fs.mkdir(path.resolve(opts.rootDir, opts.pjsonPath, opts.pagesPath), function (err) {
+                if (err && err.code !== 'EEXIST') {
+                    console.log(err);
+                    return err;
+                }
             });
         });
     });

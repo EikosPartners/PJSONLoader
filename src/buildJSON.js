@@ -145,9 +145,8 @@ function getJSON(name, opts, callback) {
     });
 }
 
-function test(file, opts, callback) {
-    var start = new Date().getMilliseconds(),
-        dictionaries,
+function test(json, opts, callback) {
+    var dictionaries,
         _filePath = path.resolve(opts.rootDir, opts.pjsonPath);
 
     //initialize
@@ -158,18 +157,15 @@ function test(file, opts, callback) {
             return;
         }
 
-        dictionaries = results.filter(function(file) {
-            return file.indexOf('fragments') !== -1;
-        }).map(function(file) {
-            return fsw.fileToJsonSync(file);
+        dictionaries = results.filter(function(json) {
+            return json.indexOf('fragments') !== -1;
+        }).map(function(json) {
+            return fsw.fileToJsonSync(json);
         });
 
         if (utils.DEBUG) console.log(results);
 
-        var merged = recursiveMergeRunner(file, dictionaries);
-        var end = new Date().getMilliseconds();
-        console.error('difference', end - start);
-
+        var merged = recursiveMergeRunner(json, dictionaries);
         callback(null, merged);
     });
 
