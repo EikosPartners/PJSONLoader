@@ -3,20 +3,15 @@ var chai = require('chai'),
     mocha = require('mocha'),
     buildJSON = require('../../src/buildJSON'),
     sf = require('../utils/sortAndFilter'),
-    testUtils = require('../utils/testUtils'),
     opts = {
-        rootDir: 'server',
-        pjsonPath: 'pjson',
-        fragmentsPath: 'fragments',
-        pagesPath: 'pages',
-        middleware: []
+        rootDir: 'pageSpecDir'
     },
     pjsonLoader = require('../../src/pjson-loader'),
     app = require('../../app'),
     expect = chai.expect;
 
 before( function () {
-    pjsonLoader.load(app, {});
+    pjsonLoader.load(app, opts, function () {});
 });
 
 describe('Page Test', function () {
@@ -24,7 +19,7 @@ describe('Page Test', function () {
     it('Merge json with simple merge id', function (done) {
         var mergeContent = {
             mergeid: "simple_merge"
-        }
+        };
         buildJSON.test(mergeContent, opts, function (err, data) {
             //console.log(JSON.stringify(data, null, 2));
             expect(data.action.options.target).to.equal("{{column_star_target}}");

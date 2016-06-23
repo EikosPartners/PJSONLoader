@@ -14,8 +14,8 @@ var fs = require('fs'),
  */
 function failSilently(e)
 {
-    if (e && e.code === 'EEXIST')
-    {
+    if (e && e.code === 'EEXIST'){
+    
         // fail silently because the directory already exists.
     }
     else
@@ -39,13 +39,15 @@ function failSilently(e)
  *          pagesPath: 'pages/' --- Optional, defaults to 'server/pjson/paths/',
  *          middleware: [] --- Optional array of middleware to use, defaults to empty array
  *       }
+ * @param callback - Callback function that passess an error if one occurred
  */
-function load(app, options)
+function load(app, options, callback)
 {
     // app must not be null
     if (!app || _.isEmpty(app))
     {
         console.error("App must not be empty");
+        callback("App must not be empty");
         return;
     }
 
@@ -53,7 +55,12 @@ function load(app, options)
     opts = _.merge(DEFAULT_DIR_OPTIONS, options);
 
     // Set up the directories, creating them if they do not exits.
-    ensureDirectory(opts);
+    var error = ensureDirectory(opts);
+
+    if (error) {
+        callback(error);
+        return;
+    }
 
     // Register the pjson route on the app.
     app.get.apply(app, ['/pjson'].concat(opts.middleware).concat([
@@ -68,6 +75,8 @@ function load(app, options)
                 });
         }
     ]));
+
+    callback(null);
 };
 
 /**
@@ -82,13 +91,35 @@ function load(app, options)
  */
 function ensureDirectory(opts)
 {
-    // Make the root directory.
-    fs.mkdir(path.resolve(opts.rootDir), failSilently);
+    // Make the root directory. Make other dirs in callback to ensure that the root dir was created.
+    fs.mkdir(path.resolve(opts.rootDir), function (err) {
+        if (err && err.code !== 'EEXIST') {
+            console.log(err);
+            return err;
+        }
 
-    // Make all other directories inside of the root directory.
-    fs.mkdir(path.resolve(opts.rootDir, opts.pjsonPath), failSilently);
-    fs.mkdir(path.resolve(opts.rootDir, opts.pjsonPath, opts.fragmentsPath), failSilently);
-    fs.mkdir(path.resolve(opts.rootDir, opts.pjsonPath, opts.pagesPath), failSilently);
+        // Make all other directories inside of the root directory.
+        fs.mkdir(path.resolve(opts.rootDir, opts.pjsonPath), function (err) {
+            if (err && err.code !== 'EEXIST') {
+                console.log(err);
+                return err;
+            }
+
+            fs.mkdir(path.resolve(opts.rootDir, opts.pjsonPath, opts.fragmentsPath), function (err) {
+                if (err && err.code !== 'EEXIST') {
+                    console.log(err);
+                    return err;
+                }
+
+                fs.mkdir(path.resolve(opts.rootDir, opts.pjsonPath, opts.pagesPath), function (err) {
+                    if (err && err.code !== 'EEXIST') {
+                        console.log(err);
+                        return err;
+                    }
+                });
+            });
+        });
+    });
 };
 
 module.exports = {

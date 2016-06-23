@@ -4,7 +4,7 @@
   "description": "PJSON loader",
   "main": "src/psjon-loader.js",
   "scripts": {
-    "test": "mocha tests/tests/**.js --reporter spec -C --timeout 15000"
+    "test": "mocha tests/tests/pjsonLoaderSpec.js --reporter spec -C --timeout 15000"
   },
   "repository": {
     "type": "git",

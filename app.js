@@ -7,7 +7,7 @@ var app = express();
 
 app.use(bodyParser.json());
 
-pjsonLoader.load(app, {});
+pjsonLoader.load(app, {}, function () {});
 
 var server = http.createServer(app);
 server.listen('9090');

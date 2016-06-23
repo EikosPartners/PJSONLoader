@@ -6,40 +6,171 @@ var chai = require('chai'),
     path = require('path'),
     rimraf = require('rimraf');
 
-function cleanup(dir) {
-    rimraf(dir, {}, function () { });
-}
+describe("Directory Creation Test Suite with Default Options", function () {
 
-describe("Directory Creation Test Suite", function () {
-
-    it('Test default directory exists when loaded', function (done) {
-        pjsonLoader.load(app, {});
-
-        expect(fs.existsSync(path.join(__dirname, '../server'))).to.be.true;
-        expect(fs.existsSync(path.join(__dirname, '../server/pjson'))).to.be.true;
-        expect(fs.existsSync(path.join(__dirname, '../server/pjson/fragments'))).to.be.true;
-        expect(fs.existsSync(path.join(__dirname, '../server/pjson/pages'))).to.be.true;
-
-        cleanup('../server');
-        done();
+    // Before hook. Call pjson loader to create the directory structure.
+    before(function (done) {
+        pjsonLoader.load(app, {}, function (err) { if (err) console.log(err); done(); });
     });
 
-    it('Test user specified directory exists when loaded', function (done) {
-        var userOpts = {
-            rootDir: 'testDir',
-            pjsonPath: 'pjsonDir',
-            fragmentsPath: 'fragPath',
-            pagesPath: 'pagesPath'
-        };
+    // After hook. Delete the created test directories.
+    after(function (done) {
+        rimraf(path.resolve(__dirname, '../../server/pjson/fragments'), {},
+            function (err) {
+                if (err) console.log(err);
 
-        pjsonLoader.load(app, userOpts);
+                rimraf(path.resolve(__dirname, '../../server/pjson/pages'), {},
+                    function (err) {
+                        if (err) console.log(err);
 
-        expect(fs.existsSync(path.join(__dirname, '../testDir'))).to.be.true;
-        expect(fs.existsSync(path.join(__dirname, '../testDir/pjsonDir'))).to.be.true;
-        expect(fs.existsSync(path.join(__dirname, '../testDir/pjsonDir/fragPath'))).to.be.true;
-        expect(fs.existsSync(path.join(__dirname, '../testDir/pjsonDir/pagesPath'))).to.be.true;
+                        rimraf(path.resolve(__dirname, '../../server/pjson'), {},
+                            function (err) {
+                                if (err) console.log(err);
 
-        cleanup('../testDir/');
-        done();
+                                rimraf(path.resolve(__dirname, '../../server'), {},
+                                    function (err) {
+                                        if (err) console.log(err);
+                                        done();
+                                    });
+                            });
+                    });
+            });
+    });
+
+    it('Test default root directory exists', function (done) {
+
+        fs.stat(path.resolve(__dirname, '../../server/'), function (err, stats) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+
+            expect(stats.isDirectory()).to.be.true;
+            done();
+        });
+    });
+
+    it('Test default pjson directory exists', function (done) {
+        fs.stat(path.resolve(__dirname, '../../server/pjson'), function (err, stats) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+
+            expect(stats.isDirectory()).to.be.true;
+            done();
+        });
+    });
+
+    it('Test default fargments directory exists', function (done) {
+        fs.stat(path.resolve(__dirname, '../../server/pjson/fragments'), function (err, stats) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+
+            expect(stats.isDirectory()).to.be.true;
+            done();
+        });
+    });
+
+    it('Test default pages directory exists', function (done) {
+        fs.stat(path.resolve(__dirname, '../../server/pjson/pages'), function (err, stats) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+
+            expect(stats.isDirectory()).to.be.true;
+            done();
+        })
+    });
+});
+
+describe("Directory Creation Test Suite with User Options", function () {
+    var userOpts = {
+        rootDir: 'testDir',
+        pjsonPath: 'pjsonDir',
+        fragmentsPath: 'fragPath',
+        pagesPath: 'pagesPath'
+    };
+
+    // Before hook. Call pjson loader to set up the user defined directory structure.
+    before(function (done) {
+        pjsonLoader.load(app, userOpts, function (err) { if (err) console.log(err); done(); } );
+    });
+
+    // After hook. Delete the test directories.
+    after(function (done) {
+        rimraf(path.resolve(__dirname, '../../testDir/pjsonDir/fragments'), {},
+            function (err) {
+                if (err) console.log(err);
+
+                rimraf(path.resolve(__dirname, '../../testDir/pjsonDir/pages'), {},
+                    function (err) {
+                        if (err) console.log(err);
+
+                        rimraf(path.resolve(__dirname, '../../testDir/pjsonDir'), {},
+                            function (err) {
+                                if (err) console.log(err);
+
+                                rimraf(path.resolve(__dirname, '../../testDir'), {},
+                                    function (err) {
+                                        if (err) console.log(err);
+                                        done();
+                                    });
+                            });
+                    });
+            });
+    });
+
+    it('Test use root directory exists', function (done) {
+
+        fs.stat(path.resolve(__dirname, '../../testDir/'), function (err, stats) {
+            if (err) {
+                console.log(err);
+                return false;
+            }
+
+            expect(stats.isDirectory()).to.be.true;
+            done();
+        });
+    });
+
+    it('Test user pjson directory exists', function (done) {
+        fs.stat(path.resolve(__dirname, '../../testDir/pjsonDir'), function (err, stats) {
+            if (err) {
+                console.log(err);
+                return false;
+            }
+
+            expect(stats.isDirectory()).to.be.true;
+            done();
+        });
+    });
+
+    it('Test user fragments path exists', function (done) {
+        fs.stat(path.resolve(__dirname, '../../testDir/pjsonDir/fragPath'), function (err, stats) {
+            if (err) {
+                console.log(err);
+                expect(false).to.be.true;
+                return false;
+            }
+
+            expect(stats.isDirectory()).to.be.true;
+            done();
+        });
+    });
+
+    it('Test user pages path exists', function (done) {
+        fs.stat(path.resolve(__dirname, '../../testDir/pjsonDir/pagesPath'), function (err, stats) {
+            if (err) {
+                console.log(err);
+                return false;
+            }
+
+            expect(stats.isDirectory()).to.be.true;
+            done();
+        });
     });
 });
