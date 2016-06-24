@@ -13,7 +13,7 @@ describe("Directory Creation Test Suite with Default Options", function () {
         pjsonLoader.load(app, {}, function (err) { if (err) console.log(err); done(); });
     });
 
-    //After hook. Delete the created test directories.
+    // After hook. Delete the created test directories.
     after(function (done) {
         rimraf(path.resolve(__dirname, '../../server/pjson/fragments'), {},
             function (err) {
@@ -42,7 +42,7 @@ describe("Directory Creation Test Suite with Default Options", function () {
         fs.stat(path.resolve(__dirname, '../../server/'), function (err, stats) {
             if (err) {
                 console.log(err);
-                return;
+                done(err);
             }
 
             expect(stats.isDirectory()).to.be.true;
@@ -54,7 +54,7 @@ describe("Directory Creation Test Suite with Default Options", function () {
         fs.stat(path.resolve(__dirname, '../../server/pjson'), function (err, stats) {
             if (err) {
                 console.log(err);
-                return;
+                done(err);
             }
 
             expect(stats.isDirectory()).to.be.true;
@@ -66,7 +66,7 @@ describe("Directory Creation Test Suite with Default Options", function () {
         fs.stat(path.resolve(__dirname, '../../server/pjson/fragments'), function (err, stats) {
             if (err) {
                 console.log(err);
-                return;
+                done(err);
             }
 
             expect(stats.isDirectory()).to.be.true;
@@ -78,6 +78,7 @@ describe("Directory Creation Test Suite with Default Options", function () {
         fs.stat(path.resolve(__dirname, '../../server/pjson/pages'), function (err, stats) {
             if (err) {
                 console.log(err);
+                done(err);
             }
 
             expect(stats.isDirectory()).to.be.true;
@@ -128,7 +129,7 @@ describe("Directory Creation Test Suite with User Options", function () {
         fs.stat(path.resolve(__dirname, '../../testDir/'), function (err, stats) {
             if (err) {
                 console.log(err);
-                return false;
+                done(err);
             }
 
             expect(stats.isDirectory()).to.be.true;
@@ -140,7 +141,7 @@ describe("Directory Creation Test Suite with User Options", function () {
         fs.stat(path.resolve(__dirname, '../../testDir/pjsonDir'), function (err, stats) {
             if (err) {
                 console.log(err);
-                return false;
+                done(err);
             }
 
             expect(stats.isDirectory()).to.be.true;
@@ -152,8 +153,7 @@ describe("Directory Creation Test Suite with User Options", function () {
         fs.stat(path.resolve(__dirname, '../../testDir/pjsonDir/fragPath'), function (err, stats) {
             if (err) {
                 console.log(err);
-                expect(false).to.be.true;
-                return false;
+                done(err);
             }
 
             expect(stats.isDirectory()).to.be.true;
@@ -165,7 +165,7 @@ describe("Directory Creation Test Suite with User Options", function () {
         fs.stat(path.resolve(__dirname, '../../testDir/pjsonDir/pagesPath'), function (err, stats) {
             if (err) {
                 console.log(err);
-                return false;
+                done(err);
             }
 
             expect(stats.isDirectory()).to.be.true;

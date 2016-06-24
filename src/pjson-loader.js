@@ -8,7 +8,8 @@ var fs = require('fs'),
         middleware: []
     },
     pjson = require('./buildJSON.js'),
-    _ = require('lodash');
+    _ = require('lodash'),
+    mkdirp = require('mkdirp');
 
 /**
  * Load method to set up the route and ensure that the directories needed for pjson
@@ -26,6 +27,15 @@ var fs = require('fs'),
  */
 function load(app, options, callback)
 {
+    // Default callback if not defined.
+    if (!callback) {
+        callback = function (err) {
+            if (err) {
+                console.warn("Application not handling error:", err);
+            }
+        }
+    }
+
     // app must not be null
     if (!app || _.isEmpty(app))
     {
@@ -35,8 +45,7 @@ function load(app, options, callback)
     }
 
     // Merge the default opts with the options the user supplied.
-    opts = _.merge(DEFAULT_DIR_OPTIONS, options);
-
+    var opts = _.defaults(options, DEFAULT_DIR_OPTIONS);
     // Set up the directories, creating them if they do not exits.
     var error = ensureDirectory(opts);
 
@@ -58,7 +67,6 @@ function load(app, options, callback)
                 });
         }
     ]));
-
     callback(null);
 };
 
@@ -74,33 +82,24 @@ function load(app, options, callback)
  */
 function ensureDirectory(opts)
 {
-    // Make the root directory. Make other dirs in callback to ensure that the root dir was created.
-    fs.mkdir(path.resolve(opts.rootDir), function (err) {
-        if (err && err.code !== 'EEXIST') {
+    mkdirp(path.resolve(opts.rootDir, opts.pjsonPath), function (err) {
+        if (err) {
             console.log(err);
             return err;
         }
 
-        // Make all other directories inside of the root directory.
-        fs.mkdir(path.resolve(opts.rootDir, opts.pjsonPath), function (err) {
+        fs.mkdir(path.resolve(opts.rootDir, opts.pjsonPath, opts.fragmentsPath), function (err) {
             if (err && err.code !== 'EEXIST') {
                 console.log(err);
                 return err;
             }
+        });
 
-            fs.mkdir(path.resolve(opts.rootDir, opts.pjsonPath, opts.fragmentsPath), function (err) {
-                if (err && err.code !== 'EEXIST') {
-                    console.log(err);
-                    return err;
-                }
-            });
-
-            fs.mkdir(path.resolve(opts.rootDir, opts.pjsonPath, opts.pagesPath), function (err) {
-                if (err && err.code !== 'EEXIST') {
-                    console.log(err);
-                    return err;
-                }
-            });
+        fs.mkdir(path.resolve(opts.rootDir, opts.pjsonPath, opts.pagesPath), function (err) {
+            if (err && err.code !== 'EEXIST') {
+                console.log(err);
+                return err;
+            }
         });
     });
 };

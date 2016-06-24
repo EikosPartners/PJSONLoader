@@ -5,21 +5,19 @@ var http = require('http');
 var fs = require('fs');
 var path = require('path');
 var testJSON = require('./tests.json');
+DEFAULT_DIR_OPTIONS = {
+    rootDir: 'server',
+    pjsonPath: 'pjson',
+    fragmentsPath: 'fragments',
+    pagesPath: 'pages',
+    middleware: []
+};
 
 var app = express();
 
 app.use(bodyParser.json());
 
-pjsonLoader.load(app, {}, function () {
-    // Copy the tests.json file to the server test directory if it doesn't exist.
-    fs.stat('server/pjson/tests.json', function (err, stats) {
-        if (!stats)
-        {
-            // File doesn't exist, create it.
-            fs.writeFileSync(path.resolve(__dirname, 'server/pjson/tests.json'), JSON.stringify(testJSON));
-        }
-    });
-});
+pjsonLoader.load(app, {});
 
 var server = http.createServer(app);
 server.listen('9090');

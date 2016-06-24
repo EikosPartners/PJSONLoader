@@ -1,9 +1,10 @@
 {
   "name": "pjson-loader",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "PJSON loader",
   "main": "src/pjson-loader.js",
   "scripts": {
+    "prepublish": "npm run test",
     "test": "mocha tests/tests/**.js --reporter spec -C --timeout 15000"
   },
   "repository": {
@@ -21,6 +22,7 @@
     "copyfiles": "^0.2.1",
     "express": "^4.14.0",
     "lodash": "^4.13.1",
+    "mkdirp": "^0.5.1",
     "moment": "^2.13.0",
     "mustache": "^2.2.1"
   },

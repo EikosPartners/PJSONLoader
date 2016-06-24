@@ -26,14 +26,15 @@ This is the repository for the PJSON loader.
         middleware: []
     }
    */
-   
-  // App is your express application to bind the /pjson route to. 
-   
+
+  // App is your express application to bind the /pjson route to.
+
   pjsonLoader.load(app, {}, function (err) {
       // Handle error if there was one.
   });
 ```
-##### Specifying directory options
+##### Specifying directory option
+Pages and fragments should always be in the pjson directory.
 ```javascript
   var myOpts = {
     rootDir: "myDir",
@@ -42,10 +43,9 @@ This is the repository for the PJSON loader.
     pagesPath: "myPagesPath",
     middleware: [myMiddleWareFuncs, ...]
   }
-  
+
   pjsonLoader.load(app, myOpts, function (err) {});
 ```
 
 # Tests
   `npm run test`
-
