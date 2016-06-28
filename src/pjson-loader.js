@@ -5,7 +5,8 @@ var fs = require('fs'),
         pjsonPath: 'pjson',
         fragmentsPath: 'fragments',
         pagesPath: 'pages',
-        middleware: []
+        middleware: [],
+        jsonTransform : function (req, res, data) { return data; }
     },
     pjson = require('./buildJSON.js'),
     _ = require('lodash'),
@@ -21,7 +22,8 @@ var fs = require('fs'),
  *          pjsonPath: 'pjson/', ---  Optional, defaults to 'server/pjson/'
  *          fragmentsPath: 'fragments/', --- Optional, defaults to 'pjson/fragments/'
  *          pagesPath: 'pages/' --- Optional, defaults to 'server/pjson/paths/',
- *          middleware: [] --- Optional array of middleware to use, defaults to empty array
+ *          middleware: [] --- Optional array of middleware to use, defaults to empty array,
+*           jsonTransform: function --- Function that transforms json before sending it back
  *       }
  * @param callback - Callback function that passess an error if one occurred
  */
@@ -46,6 +48,7 @@ function load(app, options, callback)
 
     // Merge the default opts with the options the user supplied.
     var opts = _.defaults(options, DEFAULT_DIR_OPTIONS);
+
     // Set up the directories, creating them if they do not exits.
     var error = ensureDirectory(opts);
 
@@ -62,7 +65,7 @@ function load(app, options, callback)
                     if (err) {
                         res.status(404).send(err);
                     } else {
-                        res.send(data)
+                        res.send(options.jsonTransform(req, res, data))
                     }
                 });
         }
