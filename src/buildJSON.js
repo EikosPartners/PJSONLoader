@@ -107,7 +107,7 @@ function getJSON(name, opts, callback) {
     var start = new Date().getMilliseconds(),
         _filePath = path.resolve(opts.rootDir, opts.pjsonPath),
         fileName =  _filePath + "/" + name,
-        dictionaries_filePath
+        dictionaries;
 
     if (fileName.indexOf('.json') === -1) {
         fileName += '.json';
