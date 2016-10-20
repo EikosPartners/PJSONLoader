@@ -1,6 +1,6 @@
 {
   "name": "pjson-loader",
-  "version": "2.0.4",
+  "version": "2.0.0",
   "description": "PJSON loader",
   "main": "src/pjson-loader.js",
   "scripts": {

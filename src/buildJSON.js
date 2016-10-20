@@ -49,10 +49,9 @@ function mergeMustache(target, source) {
 }
 function mergeOverrides(target, source) {
     if(source.overrides && _.isObject(source.overrides)) {
-        for(key in source.overrides) {
-            var value = source.overrides[key];
-            utils.set(target, key, value);
-        }
+        Object.keys(source.overrides).forEach(function (key) {
+            utils.set(target, key, source.overrides[key]);
+        })
     }
 
     return target;
