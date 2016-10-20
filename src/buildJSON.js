@@ -39,13 +39,23 @@ function recursiveMergeRunner(source, dictionaries) {
     }
     return source;
 }
-function mergeOverrides(target, source) {
+function mergeMustache(target, source) {
     var targetAsString = JSON.stringify(target);
     //var results = source.overrides ? mustache.render(targetAsString, source.overrides): targetAsString;
-    var results = source.overrides ? utils.formatText(targetAsString, source.overrides) : targetAsString;
+    var results = source.mustaches ? utils.formatText(targetAsString, source.mustaches) : targetAsString;
     results = JSON.parse(results);
     results = _.merge(results, source.extend);
     return results;
+}
+function mergeOverrides(target, source) {
+    if(source.overrides && _.isObject(source.overrides)) {
+        for(key in source.overrides) {
+            var value = source.overrides[key];
+            utils.set(target, key, value);
+        }
+    }
+
+    return target;
 }
 function recursiveMerge(obj, dictionaries, depth, should) {
     var key, replacedWithKey;
@@ -78,6 +88,7 @@ function recursiveMerge(obj, dictionaries, depth, should) {
                         if (replacedWith) {
 
                             if (shouldOverride) {
+                                replacedWith = mergeMustache(replacedWith, mergeKeyOrObject);
                                 replacedWith = mergeOverrides(replacedWith, mergeKeyOrObject);
                             }
                             for (replacedWithKey in replacedWith) {

@@ -157,6 +157,23 @@ module.exports = _module =  {
             returnText = values[prop] !== undefined ? returnText.replace(match, values[prop]) : returnText;
         });
         return returnText;
+    },
+    set: function (data, nestedKey, value) {
+
+        var path = nestedKey.split('.'),
+            obj = data;
+
+        path.forEach(function (p, index) {
+            if (!obj[p]) {
+                obj[p] = {};
+            }
+            if (index === path.length - 1) {
+                obj[p] = value;
+            }
+            obj = obj[p];
+        });
+
+        return data;
     }
 
 
