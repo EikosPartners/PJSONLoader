@@ -1,7 +1,7 @@
 var _module,
     utils = require('../../src/util/dataUtils'),
     _ = require('lodash'),
-    fsw = require('../../src/util/fsWrapper'),
+    fsw = require('ep-utils/fsWrapper'),
     fs = require('fs');;
 
 

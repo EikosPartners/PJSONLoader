@@ -46,7 +46,7 @@ describe('Page Test', function () {
         var mergeContent = {
             "mergeid": {
                 "id": "merge_with_override",
-                "overrides": {
+                "mustaches": {
                     "column_star_target":"gridAdvancedGrid-npps-mf.favorite",
                     "column_target_uri": "npps_mf_pools/save"
                 }
@@ -66,7 +66,7 @@ describe('Page Test', function () {
         var mergeContent = {
             "mergeid": {
                 "id": "mergeid_mustache_merge",
-                "overrides": {
+                "mustaches": {
                     "mergeid_merge_value":"recursion_test"
                 }
             }

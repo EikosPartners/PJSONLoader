@@ -1,5 +1,5 @@
 var fs = require('fs');
-var fsw = require('./util/fsWrapper');
+var fsw = require('ep-utils/fsWrapper');
 var path = require('path');
 var mustache = require('mustache');
 var _ = require('lodash');
