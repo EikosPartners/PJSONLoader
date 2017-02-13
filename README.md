@@ -23,7 +23,10 @@ This is the repository for the PJSON loader.
         pjsonPath: 'pjson',
         fragmentsPath: 'fragments',
         pagesPath: 'pages',
-        middleware: []
+        middleware: [],
+        url: '/pjson',
+        queryParam: true,
+        paramName: '',
     }
    */
 
@@ -45,6 +48,18 @@ Pages and fragments should always be in the pjson directory.
   }
 
   pjsonLoader.load(app, myOpts, function (err) {});
+```
+
+##### Specifying a custom url
+```javascript
+// This will load pjson files from the url /UI/:pjsonname
+// To use the custom url you must set queryParam to false and provide the paramName
+// property.
+pjsonLoader.load(app, {
+    url: '/UI/:pjsonname/',
+    queryParam: false,
+    paramName: 'pjsonname'
+});
 ```
 
 # Tests

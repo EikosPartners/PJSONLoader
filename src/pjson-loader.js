@@ -6,6 +6,9 @@ var fs = require('fs'),
         fragmentsPath: 'fragments',
         pagesPath: 'pages',
         middleware: [],
+        url: '/pjson',
+        queryParam: true,
+        paramName: '',
         jsonTransform : function (req, res, data) { return data; }
     },
     pjson = require('./buildJSON.js'),
@@ -35,7 +38,7 @@ function load(app, options, callback)
             if (err) {
                 console.warn("Application not handling error:", err);
             }
-        }
+        };
     }
 
     // app must not be null
@@ -58,20 +61,29 @@ function load(app, options, callback)
     }
 
     // Register the pjson route on the app.
-    app.get.apply(app, ['/pjson'].concat(opts.middleware).concat([
+    app.get.apply(app, [opts.url].concat(opts.middleware).concat([
         function (req, res, next) {
-            pjson.getJSON(req.query.name, opts,
+            let jsonName;
+
+            if (opts.queryParam) {
+                jsonName = req.query.name;
+            } else {
+                jsonName = req.params[opts.paramName];
+                jsonName = opts.pagesPath + '/' + jsonName;
+            }
+
+            pjson.getJSON(jsonName, opts,
                 function (err, data) {
                     if (err) {
                         res.status(404).send(err);
                     } else {
-                        res.send(options.jsonTransform(req, res, data))
+                        res.send(options.jsonTransform(req, res, data));
                     }
                 });
         }
     ]));
     callback(null);
-};
+}
 
 /**
  * Method to ensure that the pjson directories exist, creates them if they do not.
@@ -105,7 +117,7 @@ function ensureDirectory(opts)
             }
         });
     });
-};
+}
 
 module.exports = {
     load: load,
