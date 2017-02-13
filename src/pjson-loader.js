@@ -68,8 +68,15 @@ function load(app, options, callback)
             if (opts.queryParam) {
                 jsonName = req.query.name;
             } else {
-                jsonName = req.params[opts.paramName];
-                jsonName = opts.pagesPath + '/' + jsonName;
+                if (!opts.paramName) {
+                    let err = "Error: You must specify paramName when using a custom url with a parameter";
+                    console.error(err);
+                    res.status(404).send(err);
+                    return;
+                } else {
+                    jsonName = req.params[opts.paramName];
+                    jsonName = opts.pagesPath + '/' + jsonName;
+                }
             }
 
             pjson.getJSON(jsonName, opts,
