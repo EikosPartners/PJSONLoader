@@ -6,9 +6,11 @@ var fs = require('fs'),
         fragmentsPath: 'fragments',
         pagesPath: 'pages',
         middleware: [],
-        url: '/pjson',
-        queryParam: true,
-        paramName: '',
+        routes: [{
+            url: '/pjson',
+            queryParam: true,
+            paramName: ''
+        }],
         jsonTransform : function (req, res, data) { return data; }
     },
     pjson = require('./buildJSON.js'),
@@ -60,35 +62,55 @@ function load(app, options, callback)
         return;
     }
 
-    // Register the pjson route on the app.
-    app.get.apply(app, [opts.url].concat(opts.middleware).concat([
-        function (req, res, next) {
-            let jsonName;
+    if (!Array.isArray(opts.routes)) {
+        let error = "opts.routes should be an array of objects!";
+        callback(error);
+        return;
+    }
 
-            if (opts.queryParam) {
-                jsonName = req.query.name;
-            } else {
-                if (!opts.paramName) {
-                    let err = "Error: You must specify paramName when using a custom url with a parameter";
-                    console.error(err);
-                    res.status(404).send(err);
-                    return;
+    opts.routes.forEach( route => {
+        // Register the pjson route on the app.
+        app.get.apply(app, [route.url].concat(opts.middleware).concat([
+            function (req, res, next) {
+                let jsonName = '';
+
+                if (route.queryParam) {
+                    jsonName = req.query.name;
                 } else {
-                    jsonName = req.params[opts.paramName];
-                    jsonName = opts.pagesPath + '/' + jsonName;
-                }
-            }
-
-            pjson.getJSON(jsonName, opts,
-                function (err, data) {
-                    if (err) {
+                    if (!route.params) {
+                        let err = "Error: You must specify paramName when using a custom url with a parameter";
+                        console.error(err);
                         res.status(404).send(err);
+                        return;
                     } else {
-                        res.send(options.jsonTransform(req, res, data));
+                        if (!Array.isArray(route.params)) {
+                            route.params = [route.params];
+                        }
+
+                        route.params.forEach( (param, idx) => {
+                            jsonName += req.params[param];
+
+                            if (idx != route.params.length-1) {
+                                jsonName += '/';
+                            }
+                        });
+                        
+                        jsonName = opts.pagesPath + '/' + jsonName;
                     }
-                });
-        }
-    ]));
+                }
+
+                pjson.getJSON(jsonName, opts,
+                    function (err, data) {
+                        if (err) {
+                            res.status(404).send(err);
+                        } else {
+                            res.send(options.jsonTransform(req, res, data));
+                        }
+                    });
+            }
+        ]));
+    });
+
     callback(null);
 }
 

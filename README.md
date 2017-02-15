@@ -19,14 +19,16 @@ This is the repository for the PJSON loader.
   // Use the default options. Pass an empty object to opts.
   /*
    {
-        rootDir: 'server',
-        pjsonPath: 'pjson',
-        fragmentsPath: 'fragments',
-        pagesPath: 'pages',
-        middleware: [],
-        url: '/pjson',
-        queryParam: true,
-        paramName: '',
+       rootDir: 'server',
+       pjsonPath: 'pjson',
+       fragmentsPath: 'fragments',
+       pagesPath: 'pages',
+       middleware: [],
+       routes: [{
+           url: '/pjson',
+           queryParam: true,
+           paramName: ''
+       }]
     }
    */
 
@@ -56,9 +58,27 @@ Pages and fragments should always be in the pjson directory.
 // To use the custom url you must set queryParam to false and provide the paramName
 // property.
 pjsonLoader.load(app, {
-    url: '/UI/:pjsonname/',
-    queryParam: false,
-    paramName: 'pjsonname'
+    routes: [
+        {
+            url: '/UI/:pjsonname/',
+            queryParam: false,
+            paramName: 'pjsonname'
+        }
+    ]
+});
+```
+
+You can also specify a url for subdirectories in your pages path.
+```javascript
+// Make sure to specify the params in the order they appear in the url.
+pjsonLoader.load(app, {
+    routes: [
+        {
+            url: 'UI/:subdirectory/:pjsonname',
+            queryParam: false,
+            params: ['subdirectory', 'pjsonname']
+        }
+    ]
 });
 ```
 
