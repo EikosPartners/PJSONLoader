@@ -9,7 +9,7 @@ var fs = require('fs'),
         routes: [{
             url: '/pjson',
             queryParam: true,
-            paramName: ''
+            params: []
         }],
         jsonTransform : function (req, res, data) { return data; }
     },
@@ -73,12 +73,11 @@ function load(app, options, callback)
         app.get.apply(app, [route.url].concat(opts.middleware).concat([
             function (req, res, next) {
                 let jsonName = '';
-
                 if (route.queryParam) {
                     jsonName = req.query.name;
                 } else {
                     if (!route.params) {
-                        let err = "Error: You must specify paramName when using a custom url with a parameter";
+                        let err = "Error: You must specify params when using a custom url with a parameter";
                         console.error(err);
                         res.status(404).send(err);
                         return;
@@ -94,7 +93,7 @@ function load(app, options, callback)
                                 jsonName += '/';
                             }
                         });
-                        
+
                         jsonName = opts.pagesPath + '/' + jsonName;
                     }
                 }

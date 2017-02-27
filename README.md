@@ -27,7 +27,7 @@ This is the repository for the PJSON loader.
        routes: [{
            url: '/pjson',
            queryParam: true,
-           paramName: ''
+           params: []
        }]
     }
    */
@@ -62,7 +62,7 @@ pjsonLoader.load(app, {
         {
             url: '/UI/:pjsonname/',
             queryParam: false,
-            paramName: 'pjsonname'
+            params: 'pjsonname'
         }
     ]
 });
@@ -74,7 +74,7 @@ You can also specify a url for subdirectories in your pages path.
 pjsonLoader.load(app, {
     routes: [
         {
-            url: 'UI/:subdirectory/:pjsonname',
+            url: '/UI/:subdirectory/:pjsonname',
             queryParam: false,
             params: ['subdirectory', 'pjsonname']
         }
