@@ -103,6 +103,12 @@ function recursiveMerge(obj, dictionaries, depth, should) {
         }
     }
 }
+
+function requireFile(file) {
+    delete require.cache[require.resolve(file)];
+    return require(file);
+}
+
 function getJSON(name, opts, callback) {
     var start = new Date().getMilliseconds(),
         _filePath = path.resolve(opts.rootDir, opts.pjsonPath),
@@ -113,6 +119,9 @@ function getJSON(name, opts, callback) {
         fileName += '.json';
     }
 
+    if (!fs.existsSync(fileName) && fs.existsSync(fileName.replace('.json', '.js'))) {
+        fileName = fileName.replace('.json', '.js');
+    }
     //initialize
     walk(_filePath, function(err, results) {
 
@@ -124,24 +133,33 @@ function getJSON(name, opts, callback) {
         dictionaries = results.filter(function(file) {
             return file.indexOf('fragments') !== -1;
         }).map(function(file) {
-            return fsw.fileToJsonSync(file);
+            return file.match(/\.json$/) ? fsw.fileToJsonSync(file) : requireFile(file);
         });
 
         if (utils.DEBUG) console.log(results);
-        fsw.fileToJson(fileName, function(err, file) {
+        if (fileName.match(/\.json$/)) {
+            fsw.fileToJson(fileName, function (err, file) {
 
-            if (err) {
-                console.log("file:", fileName, err)
-                callback({ "error": err })
-                return;
-            }
+                if (err) {
+                    console.log("file:", fileName, err)
+                    callback({ "error": err })
+                    return;
+                }
 
+                complete(file);
+            });
+        } else {
+            complete(requireFile(fileName));
+        }
+
+        function complete(file) {
             var merged = recursiveMergeRunner(file, dictionaries);
             var end = new Date().getMilliseconds();
-            console.error("fileName=", name, "    time: ", end - start, "(ms)");
+            // console.error("fileName=", name, "    time: ", end - start, "(ms)");
             //console.log(JSON.stringify(file));
             callback(null, merged);
-        });
+        }
+
     });
 }
 

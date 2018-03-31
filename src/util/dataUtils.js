@@ -3,7 +3,7 @@ var _ = require('lodash'),
     _module;
 
 
-var DEBUG = true,
+var DEBUG = false,
     ALPHA = "QWERTYUIOPASDFGHJKLZXCVBNM",
     NUMERIC = "0123456789",
     BOOLS = [false, true, false],
